@@ -11,29 +11,29 @@ import java.util.List;
 public class ListaTarefaService {
     private ListaTarefaRepository listaTarefaRepository;
 
-    // Metodo construtor
+    // Injection via Metodo construtor
     public ListaTarefaService(ListaTarefaRepository listaTarefaRepository) {
         this.listaTarefaRepository = listaTarefaRepository;
     }
 
-    List<ListaTarefa> create(ListaTarefa listaTarefa){
+    public List<ListaTarefa> create(ListaTarefa listaTarefa){
         listaTarefaRepository.save(listaTarefa);
         return list();
     }
 
-    List<ListaTarefa> list(){
+    public List<ListaTarefa> list(){
         // Mecanismo de ordenação das tarefas
         Sort.by("ordemApresentacao").descending().
                 and(Sort.by("nome").ascending());
         return listaTarefaRepository.findAll();
     }
 
-    List<ListaTarefa> update(ListaTarefa listaTarefa){
+    public List<ListaTarefa> update(ListaTarefa listaTarefa){
         listaTarefaRepository.save(listaTarefa);
         return list();
     }
 
-    List<ListaTarefa> delete(Long id){
+    public List<ListaTarefa> delete(Long id){
         listaTarefaRepository.deleteById(id);
         return list();
     }
