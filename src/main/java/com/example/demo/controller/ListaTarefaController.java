@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.ListaTarefa;
 import com.example.demo.service.ListaTarefaService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public class ListaTarefaController {
     }
 
     @PostMapping
-    public List<ListaTarefa> create(@RequestBody ListaTarefa listaTarefa){
+    public List<ListaTarefa> create(@RequestBody @Valid ListaTarefa listaTarefa){
         return listaTarefaService.create(listaTarefa);
     }
 

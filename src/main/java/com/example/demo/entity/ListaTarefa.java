@@ -1,9 +1,11 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Tarefas")
@@ -11,12 +13,28 @@ public class ListaTarefa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank
     private String nome;
     private String descricao;
     private boolean realizada;
+    @NotNull
     private BigDecimal custo;
-    private Date dataLimite;
+    @NotNull
+    private LocalDateTime dataLimite;
     private int ordemApresentacao;
+
+    public ListaTarefa(String nome, String descricao, boolean realizada, BigDecimal custo, LocalDateTime dataLimite, int ordemApresentacao) {
+        this.nome = nome;
+        this.descricao = descricao;
+        this.realizada = realizada;
+        this.custo = custo;
+        this.dataLimite = dataLimite;
+        this.ordemApresentacao = ordemApresentacao;
+    }
+
+    // Construtor sem parametros para funcionamento do JPA
+    public ListaTarefa() {
+    }
 
     public Long getId() {
         return id;
@@ -58,11 +76,11 @@ public class ListaTarefa {
         this.custo = custo;
     }
 
-    public Date getDataLimite() {
+    public LocalDateTime getDataLimite() {
         return dataLimite;
     }
 
-    public void setDataLimite(Date dataLimite) {
+    public void setDataLimite(LocalDateTime dataLimite) {
         this.dataLimite = dataLimite;
     }
 
