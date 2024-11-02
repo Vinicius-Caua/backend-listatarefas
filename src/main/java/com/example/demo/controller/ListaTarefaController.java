@@ -27,8 +27,12 @@ public class ListaTarefaController {
         return listaTarefaService.list();
     }
 
-    @PutMapping
-    List<ListaTarefa> update(@RequestBody ListaTarefa listaTarefa){
+    @PutMapping("/{id}")
+    List<ListaTarefa> update(@PathVariable Long id, @RequestBody @Valid ListaTarefa listaTarefa){
+        // Lógica para garantir que o ID não pode ser alterado
+        if (!id.equals(listaTarefa.getId())) {
+            throw new IllegalArgumentException("Não é permitido alterar o ID da tarefa.");
+        }
         return listaTarefaService.update(listaTarefa);
     }
 

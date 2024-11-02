@@ -37,10 +37,37 @@ public class ListaTarefaService {
         return listaTarefaRepository.findAll();
     }
 
-    public List<ListaTarefa> update(ListaTarefa listaTarefa){
+    public List<ListaTarefa> update(ListaTarefa listaTarefa) {
+        // Verifica se a tarefa existe
+        if (!listaTarefaRepository.existsById(listaTarefa.getId())) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Tarefa não encontrada.");
+        }
+
+        // Recupera a tarefa existente
+        ListaTarefa tarefaExistente = listaTarefaRepository.findById(listaTarefa.getId()).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Tarefa não encontrada."));
+
+        // Verifica se a ordem de apresentacao esta sendo alterada
+        if (tarefaExistente.getOrdemApresentacao() != listaTarefa.getOrdemApresentacao()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A ordem de apresentação não pode ser alterada.");
+        }
+
+        // Verifica se o nome da tarefa já existe, excluindo a tarefa atual
+        if (!tarefaExistente.getNome().equalsIgnoreCase(listaTarefa.getNome()) &&
+                isNomeTarefaExistente(listaTarefa.getNome())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Uma tarefa com o nome '" + listaTarefa.getNome() + "' já existe.");
+        }
+
+        // Mantém o ID e a ordem de apresentação da tarefa existente
+        listaTarefa.setOrdemApresentacao(tarefaExistente.getOrdemApresentacao());
+        listaTarefa.setId(tarefaExistente.getId()); // Garante que o ID não será alterado
+
+        // Salva a tarefa atualizada
         listaTarefaRepository.save(listaTarefa);
         return list();
     }
+
 
     public List<ListaTarefa> delete(Long id){
         listaTarefaRepository.deleteById(id);
