@@ -3,7 +3,9 @@ package com.example.demo.service;
 import com.example.demo.entity.ListaTarefa;
 import com.example.demo.repository.ListaTarefaRepository;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -16,7 +18,13 @@ public class ListaTarefaService {
         this.listaTarefaRepository = listaTarefaRepository;
     }
 
-    public List<ListaTarefa> create(ListaTarefa listaTarefa){
+    public List<ListaTarefa> create(ListaTarefa listaTarefa) {
+        // Verifica se o nome da tarefa já existe
+        if (isNomeTarefaExistente(listaTarefa.getNome())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Uma tarefa com o nome '" + listaTarefa.getNome() + "' já existe.");
+        }
+
         listaTarefa.setOrdemApresentacao(getNextOrdemApresentacao());
         listaTarefaRepository.save(listaTarefa);
         return list();
@@ -51,5 +59,11 @@ public class ListaTarefaService {
             tarefa.setOrdemApresentacao(i + 1);
             listaTarefaRepository.save(tarefa);
         }
+    }
+
+    private boolean isNomeTarefaExistente(String nome) {
+        // Recupera todas as tarefas existentes e verifica se alguma delas tem o mesmo nome
+        List<ListaTarefa> tarefas = listaTarefaRepository.findAll();
+        return tarefas.stream().anyMatch(tarefa -> tarefa.getNome().equalsIgnoreCase(nome));
     }
 }

@@ -45,6 +45,14 @@ class DesafioListatarefasApplicationTests {
 				.jsonPath("$[0].custo").isEqualTo(listatarefas.getCusto().toString())
 				.jsonPath("$[0].dataLimite").isEqualTo("2024-10-15T00:00:00")
 				.jsonPath("$[0].ordemApresentacao").isEqualTo(1);
+
+		webTestClient
+				.get()
+				.uri("/tarefas")
+				.exchange()
+				.expectStatus().isOk()
+				.expectBody()
+				.jsonPath("$[?(@.nome == 'Pagar aluguel')]").exists(); // Verifica se a tarefa existe
 	}
 
 	@Test
@@ -60,4 +68,28 @@ class DesafioListatarefasApplicationTests {
 
 	}
 
+	@Test
+	void testCreateListaTarefasDuplicateName() {
+		// Crie uma tarefa válida
+		var dataLimite = LocalDateTime.of(2024, 10, 15, 0, 0, 0);
+		var listatarefas = new ListaTarefa("Pagar aluguel", "Pagamento da conta de luz",
+				false, new BigDecimal("345.89"), dataLimite);
+		webTestClient
+				.post()
+				.uri("/tarefas")
+				.bodyValue(listatarefas)
+				.exchange()
+				.expectStatus().isOk();
+
+		// Tenta criar uma tarefa com o mesmo nome
+		webTestClient
+				.post()
+				.uri("/tarefas")
+				.bodyValue(new ListaTarefa("Pagar aluguel", "Outra descrição",
+						false, new BigDecimal("123.45"), dataLimite))
+				.exchange()
+				.expectStatus().isBadRequest()
+				.expectBody()
+				.jsonPath("$.error").isEqualTo("Uma tarefa com o nome 'Pagar aluguel' já existe.");
+	}
 }
