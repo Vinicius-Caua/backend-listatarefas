@@ -17,6 +17,7 @@ public class ListaTarefaService {
     }
 
     public List<ListaTarefa> create(ListaTarefa listaTarefa){
+        listaTarefa.setOrdemApresentacao(getNextOrdemApresentacao());
         listaTarefaRepository.save(listaTarefa);
         return list();
     }
@@ -35,6 +36,20 @@ public class ListaTarefaService {
 
     public List<ListaTarefa> delete(Long id){
         listaTarefaRepository.deleteById(id);
+        reordenarOrdemApresentacao();
         return list();
+    }
+
+    private int getNextOrdemApresentacao() {
+        return (int) listaTarefaRepository.count() + 1;
+    }
+
+    private void reordenarOrdemApresentacao() {
+        List<ListaTarefa> tarefas = listaTarefaRepository.findAll(Sort.by("ordemApresentacao"));
+        for (int i = 0; i < tarefas.size(); i++) {
+            ListaTarefa tarefa = tarefas.get(i);
+            tarefa.setOrdemApresentacao(i + 1);
+            listaTarefaRepository.save(tarefa);
+        }
     }
 }

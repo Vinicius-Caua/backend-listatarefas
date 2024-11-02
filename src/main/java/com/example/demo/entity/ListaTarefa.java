@@ -23,13 +23,12 @@ public class ListaTarefa {
     private LocalDateTime dataLimite;
     private int ordemApresentacao;
 
-    public ListaTarefa(String nome, String descricao, boolean realizada, BigDecimal custo, LocalDateTime dataLimite, int ordemApresentacao) {
+    public ListaTarefa(String nome, String descricao, boolean realizada, BigDecimal custo, LocalDateTime dataLimite) {
         this.nome = nome;
         this.descricao = descricao;
         this.realizada = realizada;
         this.custo = custo;
         this.dataLimite = dataLimite;
-        this.ordemApresentacao = ordemApresentacao;
     }
 
     // Construtor sem parametros para funcionamento do JPA

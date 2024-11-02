@@ -28,7 +28,7 @@ class DesafioListatarefasApplicationTests {
 		var dataLimite = LocalDateTime.of(2024, 10, 15, 0, 0, 0);
 
 		var listatarefas = new ListaTarefa("Pagar aluguel", "Pagamento da conta de luz",
-				false, new BigDecimal("345.89"), dataLimite, 1 );
+				false, new BigDecimal("345.89"), dataLimite);
 
 		webTestClient
 				.post()
@@ -44,7 +44,7 @@ class DesafioListatarefasApplicationTests {
 				.jsonPath("$[0].realizada").isEqualTo(listatarefas.isRealizada())
 				.jsonPath("$[0].custo").isEqualTo(listatarefas.getCusto().toString())
 				.jsonPath("$[0].dataLimite").isEqualTo("2024-10-15T00:00:00")
-				.jsonPath("$[0].ordemApresentacao").isEqualTo(listatarefas.getOrdemApresentacao());
+				.jsonPath("$[0].ordemApresentacao").isEqualTo(1);
 	}
 
 	@Test
@@ -54,7 +54,7 @@ class DesafioListatarefasApplicationTests {
 		webTestClient
 				.post()
 				.uri("/tarefas")
-				.bodyValue(new ListaTarefa("", "", false, new BigDecimal("0"), dataLimite, 0))
+				.bodyValue(new ListaTarefa("", "", false, new BigDecimal("0"), dataLimite))
 				.exchange()
 				.expectStatus().isBadRequest();
 
