@@ -63,21 +63,59 @@ A aplicação expõe os seguintes endpoints:
 
 ```mermaid
 classDiagram
-class TAREFAS {
-  INTEGER id_tarefa
-  VARCHAR2(80) nm_tarefa
-  NUMBER(10,2) vl_tarefa
-  DATE dt_limite_tarefa
-  VARCHAR2(255) ds_tarefa
-  INTEGER cd_ordem_apresentacao
-  INTEGER USUARIOS_id_usuario
-}
-class USUARIOS {
-  INTEGER id_usuario
-  VARCHAR2(20) nm_usuario
-  VARCHAR2(30) nm_cargo
-}
-TAREFAS --|> USUARIOS : USUARIOS_id_usuario
+    class DesafioListatarefasApplication {
+        +main(String[] args)
+    }
+
+    class ListaTarefa {
+        +Long id
+        +String nome
+        +String descricao
+        +boolean realizada
+        +BigDecimal custo
+        +LocalDateTime dataLimite
+        +int ordemApresentacao
+    }
+
+    class ListaTarefaController {
+        -ListaTarefaService listaTarefaService
+        +create(ListaTarefa listaTarefa) List~ListaTarefa~
+        +list() List~ListaTarefa~
+        +update(Long id, ListaTarefa listaTarefa) List~ListaTarefa~
+        +delete(Long id) List~ListaTarefa~
+    }
+
+    class ListaTarefaService {
+        -ListaTarefaRepository listaTarefaRepository
+        +create(ListaTarefa listaTarefa) List~ListaTarefa~
+        +list() List~ListaTarefa~
+        +update(ListaTarefa listaTarefa) List~ListaTarefa~
+        +delete(Long id) List~ListaTarefa~
+    }
+
+    class ListaTarefaRepository {
+        <<interface>>
+        +findAll(Sort sort) List~ListaTarefa~
+        +save(ListaTarefa listaTarefa)
+        +existsById(Long id) boolean
+    }
+
+    class GlobalExceptionHandler {
+        +handleResponseStatusException(ResponseStatusException ex) ResponseEntity~Object~
+    }
+
+    class DesafioListatarefasApplicationTests {
+        -WebTestClient webTestClient
+        +testUpdateListaTarefaSuccess()
+        +testUpdateListaTarefaIDAlterado()
+        +testUpdateListaTarefaDuplicateName()
+        +testUpdateListaTarefaChangeOrder()
+    }
+
+    ListaTarefaController --> ListaTarefaService
+    ListaTarefaService --> ListaTarefaRepository
+    ListaTarefaRepository --> ListaTarefa
+    DesafioListatarefasApplicationTests --> WebTestClient
 ```
 
 ## Contribuição
