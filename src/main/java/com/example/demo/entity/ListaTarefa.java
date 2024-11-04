@@ -2,6 +2,7 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
@@ -13,13 +14,13 @@ public class ListaTarefa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank
+    @NotEmpty
     private String nome;
     private String descricao;
     private boolean realizada;
-    @NotNull
+    @NotNull(message = "O custo não pode ser nulo")
     private BigDecimal custo;
-    @NotNull
+    @NotNull(message = "A data limite não pode ser nula")
     private LocalDateTime dataLimite;
     private int ordemApresentacao;
 
