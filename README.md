@@ -3,7 +3,7 @@
 <a id="readme-top"></a>
 Este é um projeto Spring Boot utilizando Maven, JPA, Hibernate e MySQL.
 Backend de uma lista de tarefas, onde tem os principais verbos do CRUD.
-
+Também fiz um [FrontEnd](https://github.com/Vinicius-Caua/frontend-listatarefas.git) que irá consumir esta API.
 ## Requisitos
 
 - Java 17 ou superior
