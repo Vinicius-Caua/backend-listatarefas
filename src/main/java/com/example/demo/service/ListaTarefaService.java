@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -19,6 +20,12 @@ public class ListaTarefaService {
     }
 
     public List<ListaTarefa> create(ListaTarefa listaTarefa) {
+        // Validação do custo inferior a zero
+        if (listaTarefa.getCusto().compareTo(BigDecimal.ZERO) < 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "O custo da tarefa não pode ser inferior a zero.");
+        }
+
         // Verifica se o nome da tarefa já existe
         if (isNomeTarefaExistente(listaTarefa.getNome())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -37,6 +44,12 @@ public class ListaTarefaService {
 
 
     public List<ListaTarefa> update(ListaTarefa listaTarefa) {
+        // Validação do custo inferior a zero
+        if (listaTarefa.getCusto().compareTo(BigDecimal.ZERO) < 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "O custo da tarefa não pode ser inferior a zero.");
+        }
+
         // Verifica se a tarefa existe
         if (!listaTarefaRepository.existsById(listaTarefa.getId())) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Tarefa não encontrada.");
@@ -46,10 +59,6 @@ public class ListaTarefaService {
         ListaTarefa tarefaExistente = listaTarefaRepository.findById(listaTarefa.getId()).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Tarefa não encontrada."));
 
-        // Verifica se a ordem de apresentacao esta sendo alterada
-//        if (tarefaExistente.getOrdemApresentacao() != listaTarefa.getOrdemApresentacao()) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A ordem de apresentação não pode ser alterada.");
-//        }
 
         // Verifica se o nome da tarefa já existe, excluindo a tarefa atual
         if (!tarefaExistente.getNome().equalsIgnoreCase(listaTarefa.getNome()) &&
@@ -58,9 +67,8 @@ public class ListaTarefaService {
                     "Uma tarefa com o nome '" + listaTarefa.getNome() + "' já existe.");
         }
 
-        // Mantém o ID e a ordem de apresentação da tarefa existente
-//        listaTarefa.setOrdemApresentacao(tarefaExistente.getOrdemApresentacao());
-        listaTarefa.setId(tarefaExistente.getId()); // Garante que o ID não será alterado
+        // Garante que o ID não será alterado
+        listaTarefa.setId(tarefaExistente.getId());
 
         // Salva a tarefa atualizada
         listaTarefaRepository.save(listaTarefa);
